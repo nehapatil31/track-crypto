@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+    volumes:
+      - mongo-data:/data/db
+
+  nextjs-app:
+    build:
+      context: .
+    container_name: nextjs-app
+    depends_on:
+      - mongodb
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/mydatabase
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
